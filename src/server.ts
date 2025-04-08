@@ -4,15 +4,11 @@ import connectDB from './config/database'
 
 
 const app: Express = createApp()
-
 const port: string | undefined = process.env.PORT
+
 
 app.get('/', (req: Request, res: Response): void => {
     res.status(200).send('Financial Management API')
-})
-
-app.get("/transactions", (req: Request, res: Response): void => {
-    res.status(200).send({ gastos: null })
 })
 
 

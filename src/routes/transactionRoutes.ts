@@ -1,16 +1,17 @@
-import { Router, Request, Response } from "express";
-
+import { Router } from 'express'
+import TransactionController from '../controllers/TransactionController'
 
 const router = Router()
+const transactionController = new TransactionController()
 
 
-router.get("/transactions/inflows", (req: Request, res: Response): void => {
-    res.status(200).send({ gastos: null })
-})
+router.get("/:userId/transactions", transactionController.getAll)
 
-router.get("/transactions/ouflows", (req: Request, res: Response): void => {
-    res.status(200).send({ gastos: null })
-})
+router.post("/:userId/transactions", transactionController.createOne)
+
+router.get("/:userId/transactions/inflows", transactionController.getInflows)
+
+router.get("/:userId/transactions/ouflows", transactionController.getOutflows)
 
 
 export default router

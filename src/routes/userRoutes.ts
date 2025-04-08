@@ -1,12 +1,12 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import UserController from "../controllers/UserController";
 
 
 const router = Router()
+const userController = new UserController()
 
-
-router.get("/transactions/ouflows", (req: Request, res: Response): void => {
-    res.status(200).send({ gastos: null })
-})
+router.get("/users", userController.getAll)
+router.post("/users/new", userController.createOne)
 
 
 export default router

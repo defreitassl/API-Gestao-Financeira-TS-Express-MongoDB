@@ -1,12 +1,13 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import CategoryController from "../controllers/CategoryController"
 
 
 const router = Router()
+const categoryController = new CategoryController()
 
 
-router.get("/transactions/inflows", (req: Request, res: Response): void => {
-    res.status(200).send({ gastos: null })
-})
+router.get("/categories", categoryController.getAll)
+router.post("/categories/new", categoryController.createOne)
 
 
 export default router
