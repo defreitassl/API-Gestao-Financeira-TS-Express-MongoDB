@@ -8,7 +8,7 @@ const createApp = (): Express => {
     app.use(json())
     app.use(inflowsRouter)
     app.use(outflowsRouter)
-    
+
 
     return app
 }

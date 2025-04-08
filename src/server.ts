@@ -1,5 +1,6 @@
 import {Express, Request, Response} from 'express'
 import createApp from './app'
+import connectDB from '../config/database'
 
 
 const app: Express = createApp()
@@ -15,6 +16,6 @@ app.get("/transactions", (req: Request, res: Response): void => {
 })
 
 
-
+connectDB()
 app.listen(port)
 console.log(`Server running on port ${port}`)
