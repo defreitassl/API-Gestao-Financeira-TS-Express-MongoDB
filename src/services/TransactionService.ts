@@ -1,31 +1,59 @@
 import { ITransaction } from "../models/TransactionModel"
-import Transaction from "../models/TransactionModel"
+import TransactionRepository from "../repositories/TransactionRepository"
+import ServiceResponse from "../utils/ServiceResponse"
+import StatusCode from "../utils/StatusCode"
 
 
 class TransactionService {
 
-    getAll = async (): Promise<ITransaction[]> => {
-        const transactions: ITransaction[] = await Transaction.find()
-        return transactions
+    getAll = async (): Promise<ServiceResponse<ITransaction[]>> => {
+        try {
+            const transactions: ITransaction[] = await TransactionRepository.getAll()
+            
+            if (transactions.length === 0) {
+                return {
+                    statusCode: StatusCode.NO_CONTENT,
+                    content: {
+                        message: "No transactions found",
+                        data: transactions
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: transactions,
+                    message: "Transactions retrieved successfully",
+                }
+            }
+            
+        } catch (error) {
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    message: "Error retrieving transactions",
+                }
+            }
+        }
     }
 
-    getInflows = async ():Promise<ITransaction[]> => {
-        const inflowsTransaction: ITransaction[] = await Transaction.find().where('inflow').equals(true)
+    getInflows = async () => {
+        const inflowsTransaction: ITransaction[] = await TransactionRepository.getInflows()
         return inflowsTransaction
     }
 
-    getOutflows = async ():Promise<ITransaction[]> => {
-        const outflowsTransactions = await Transaction.find().where('inflow').equals(false)
+    getOutflows = async () => {
+        const outflowsTransactions = await TransactionRepository.getOutflows()
         return outflowsTransactions
     }
 
-    getOne = async (id: string): Promise<ITransaction | null> => {
-        const transaction: ITransaction | null = await Transaction.findById(id)
+    getOne = async (id: string) => {
+        const transaction: ITransaction | null = await TransactionRepository.getOne(id)
         return transaction
     }
 
-    createOne = async (data: Partial<ITransaction>):Promise<ITransaction> => {
-        const transaction: ITransaction = await Transaction.create(data)
+    createOne = async (data: Partial<ITransaction>) => {
+        const transaction: ITransaction = await TransactionRepository.createOne(data)
         return transaction
     }
 }

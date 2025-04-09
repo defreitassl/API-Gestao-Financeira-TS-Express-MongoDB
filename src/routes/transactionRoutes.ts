@@ -9,6 +9,8 @@ router.get("/:userId/transactions", transactionController.getAll)
 
 router.post("/:userId/transactions", transactionController.createOne)
 
+router.get("/:userId/transactions/:transactionId", transactionController.getOne)
+
 router.get("/:userId/transactions/inflows", transactionController.getInflows)
 
 router.get("/:userId/transactions/outflows", transactionController.getOutflows)
