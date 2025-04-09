@@ -12,6 +12,7 @@ app.get('/', (req: Request, res: Response): void => {
 })
 
 
-connectDB()
-app.listen(port)
-console.log(`Server running on port ${port}`)
+app.listen(port, () => {
+    connectDB()
+    console.log(`Server running on port ${port}`)
+})

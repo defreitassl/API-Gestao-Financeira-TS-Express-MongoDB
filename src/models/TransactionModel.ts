@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose'
 
 
-interface ITransaction extends Document {
+export interface ITransaction extends Document {
     userId: Schema.Types.ObjectId,
     categoryId: Schema.Types.ObjectId,
     name: string,

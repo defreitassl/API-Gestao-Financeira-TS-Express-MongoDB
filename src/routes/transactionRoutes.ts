@@ -11,7 +11,7 @@ router.post("/:userId/transactions", transactionController.createOne)
 
 router.get("/:userId/transactions/inflows", transactionController.getInflows)
 
-router.get("/:userId/transactions/ouflows", transactionController.getOutflows)
+router.get("/:userId/transactions/outflows", transactionController.getOutflows)
 
 
 export default router
