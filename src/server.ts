@@ -1,6 +1,6 @@
 import {Express, Request, Response} from 'express'
 import createApp from './app'
-import connectDB from './config/database'
+import connectDB from './config/mongoose'
 
 
 const app: Express = createApp()

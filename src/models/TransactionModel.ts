@@ -1,9 +1,9 @@
-import { Schema, model, Document } from 'mongoose'
+import { Schema, model, Document, Types } from 'mongoose'
 
 
 export interface ITransaction extends Document {
-    userId: Schema.Types.ObjectId,
-    categoryId: Schema.Types.ObjectId,
+    userId: Types.ObjectId,
+    categoryId: Types.ObjectId,
     name: string,
     amount: number,
     inflow: boolean,
@@ -23,6 +23,8 @@ const transactionSchema = new Schema<ITransaction>({
     description: { type: String },
     recipient: { type: String },
     date: { type: Date, default: Date.now }
+}, {
+    strict: "throw"
 })
 
 const Transaction = model<ITransaction>("Transaction", transactionSchema)

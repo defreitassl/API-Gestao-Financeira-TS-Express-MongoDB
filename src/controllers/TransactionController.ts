@@ -5,34 +5,38 @@ import TransactionService from '../services/TransactionService'
 class TransactionController {
 
     getAll = async ( req: Request, res: Response ): Promise<void> => { 
-        const transactions = await TransactionService.getAll()
-        res.status(200).json(transactions)
+        const response = await TransactionService.getAll(req.params.userId)
+        res.status(response.statusCode).json(response.content)
     }
 
     getInflows = async (req: Request, res: Response ): Promise<void> => {
-
-        const inflowsTransaction = await TransactionService.getInflows()
-
-        res.status(200).json(inflowsTransaction)
+        const response = await TransactionService.getInflows(req.params.userId)
+        res.status(response.statusCode).json(response.content)
     }
 
     getOutflows = async (req: Request, res: Response ): Promise<void> => {
-
-        const outflowsTransactions = await TransactionService.getOutflows()
-
-        res.status(200).json(outflowsTransactions)
+        const response = await TransactionService.getOutflows(req.params.userId)
+        res.status(response.statusCode).json(response.content)
     }
 
     getOne = async ( req: Request, res: Response ): Promise<void> => {
-        const transaction = await TransactionService.getOne(req.params.id)
-        res.status(200).json(transaction)
+        const response = await TransactionService.getOne(req.params.transactionId, req.params.userId)
+        res.status(response.statusCode).json(response.content)
     }
 
-    createOne = async (req: Request, res: Response ): Promise<void> => {
+    createOne = async ( req: Request, res: Response ): Promise<void> => {
+        const response = await TransactionService.createOne(req.body)
+        res.status(response.statusCode).json(response.content)
+    }
 
-        const transaction = await TransactionService.createOne(req.body)
+    deleteOne = async ( req: Request, res: Response ): Promise<void> => {
+        const response = await TransactionService.deleteOne(req.params.transactionId, req.params.userId)
+        res.status(response.statusCode).json(response.content)
+    }
 
-        res.status(200).json({ transaction })
+    updateOne = async ( req: Request, res: Response ): Promise<void> => {
+        const response = await TransactionService.updateOne(req.params.transactionId, req.body)
+        res.status(response.statusCode).json(response.content)
     }
 }
 

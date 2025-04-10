@@ -1,8 +1,8 @@
 interface ServiceResponse<D>{
     statusCode: number,
-    content: {
+    content?: {
         data?: D,
-        error?: Error,
+        error?: string | unknown,
         message?: string
     }
 }
