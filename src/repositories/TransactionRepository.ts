@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import { ITransaction } from "../models/TransactionModel"
 import Transaction from "../models/TransactionModel"
-import User, { IUser } from "../models/UserModel"
+import User from "../models/UserModel"
 import DeleteResult from "../types/DeleteRequestResult"
 import UpdateResult from "../types/UpdateRequestResult"
 
