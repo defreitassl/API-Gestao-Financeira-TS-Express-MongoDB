@@ -7,11 +7,11 @@ const transactionController = new TransactionController()
 
 router.get("/:userId/transactions", transactionController.getAll)
 
-router.post("/transactions/new", transactionController.createOne)
+router.post("/:userId/transactions/new", transactionController.createOne)
 
 router.delete("/:userId/transactions/:transactionId", transactionController.deleteOne)
 
-router.patch("/transactions/:transactionId", transactionController.updateOne)
+router.patch("/:userId/transactions/:transactionId", transactionController.updateOne)
 
 router.get("/:userId/transactions/inflows", transactionController.getInflows)
 

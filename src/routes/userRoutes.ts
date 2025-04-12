@@ -6,7 +6,13 @@ const router = Router()
 const userController = new UserController()
 
 router.get("/users", userController.getAll)
+
+router.get("/users/:userId", userController.getOne)
+
 router.post("/users/new", userController.createOne)
 
+router.patch("/users/update/:userId", userController.updateOne)
+
+router.delete("/users/delete/:userId", userController.deleteOne)
 
 export default router

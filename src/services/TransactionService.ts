@@ -286,6 +286,16 @@ class TransactionService {
 
             const updatedTransactionInfo: UpdateResult = await TransactionRepository.updateOne(transactionId, data)
 
+            if (!updatedTransactionInfo || updatedTransactionInfo.matchedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: "Transaction not found",
+                        error: "Not Found Error"
+                    }
+                }
+            }
+
             return {
                 statusCode: StatusCode.OK,
                 content: {
