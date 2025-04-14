@@ -14,7 +14,7 @@ class TransactionService {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             
-            const transactions: ITransaction[] = await TransactionRepository.getAll(userId)
+            const transactions: ITransaction[] = await TransactionRepository.getAll()
             
             if (transactions.length === 0) {
                 return {
@@ -143,7 +143,7 @@ class TransactionService {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
 
-            const transaction: ITransaction | null = await TransactionRepository.getOne(transactionId, userId)
+            const transaction: ITransaction | null = await TransactionRepository.getOne(transactionId)
             
             if (!transaction) {
                 const error = new Error("Transaction not found.")
@@ -229,7 +229,7 @@ class TransactionService {
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
             const userId: Types.ObjectId = toObjectId(userIdParam)
 
-            const deletedTransactionInfo: DeleteResult = await TransactionRepository.deleteOne(transactionId, userId)
+            const deletedTransactionInfo: DeleteResult = await TransactionRepository.deleteOne(transactionId)
 
             if (deletedTransactionInfo.deletedCount === 0) {
                 return {
