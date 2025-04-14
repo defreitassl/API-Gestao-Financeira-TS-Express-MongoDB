@@ -3,7 +3,6 @@ import Repository from "./BaseRepository"
 
 
 class CategoryRepository extends Repository<ICategory> {
-
     constructor () {
         super(Category)
     }
