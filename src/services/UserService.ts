@@ -11,64 +11,171 @@ import DeleteResult from "../types/DeleteRequestResult"
 class UserService {
 
     getAll = async (): Promise<ServiceResponse<IUser[]>> => {
-        const users: IUser[] = await UserRepository.getAll()
-        
-        return {
-            statusCode: StatusCode.OK,
-            content: {
-                data: users,
-                message: "Users retrieved succesfully"
+        try {
+            const users: IUser[] = await UserRepository.getAll()
+
+            if (users.length === 0) {
+                return {
+                    statusCode: StatusCode.NO_CONTENT,
+                    content: {
+                        data: users,
+                        message: "No users found"
+                    }
+                }
+            }
+            
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: users,
+                    message: "Users retrieved succesfully"
+                }
+            }
+        } catch (error) {
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    message: "Error retrieving users",
+                    error: String(error)
+                }
             }
         }
     }
 
     getOne = async (userIdParam: string): Promise<ServiceResponse<IUser | null>> => {
-        const userId: Types.ObjectId = toObjectId(userIdParam)
-        const user: IUser | null = await UserRepository.getOne(userId)
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const user: IUser | null = await UserRepository.getOne(userId)
 
-        return {
-            statusCode: StatusCode.OK,
-            content: {
-                data: user,
-                message: "User retrieved succesfully"
+            if (!user) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: "User not found",
+                        error: "Not Found Error"
+                    }
+                }
+            }
+
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: user,
+                    message: "User retrieved succesfully"
+                }
+            }
+        } catch (error) {
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    message: "Error retrieving users",
+                    error: String(error)
+                }
             }
         }
     }
 
     createOne = async (data: Partial<IUser>): Promise<ServiceResponse<IUser>> => {
-        const user: IUser = await UserRepository.createOne(data)
+        try {
+            const user: IUser = await UserRepository.createOne(data)
 
-        return {
-            statusCode: StatusCode.CREATED,
-            content: {
-                data: user,
-                message: "User created succesfully"
+            return {
+                statusCode: StatusCode.CREATED,
+                content: {
+                    data: user,
+                    message: "User created succesfully"
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return {
+                    statusCode: StatusCode.CONFLICT,
+                    content: {
+                        message: "User email already exists",
+                        error: error.message
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    message: "Error creating user",
+                    error: String(error)
+                }
             }
         }
+        
     }
 
     updateOne = async (userIdParams: string, data: Partial<IUser>): Promise<ServiceResponse<UpdateResult>> => {
-        const userId: Types.ObjectId = toObjectId(userIdParams)
-        const updatedUserInfo: UpdateResult = await UserRepository.updateOne(userId, data)
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParams)
+            const updatedUserInfo: UpdateResult = await UserRepository.updateOne(userId, data)
 
-        return {
-            statusCode: StatusCode.OK,
-            content: {
-                data: updatedUserInfo,
-                message: "User updated succesfully"
+            if (!updatedUserInfo || updatedUserInfo.matchedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: "User not found",
+                        error: "Not Found Error"
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: updatedUserInfo,
+                    message: "User updated successfully"
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return {
+                    statusCode: StatusCode.BAD_REQUEST,
+                    content: {
+                        message: error.message,
+                        error: error.name
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    error: String(error),
+                    message: "Error updating User",
+                }
             }
         }
     }
 
     deleteOne = async (userIdParams: string): Promise<ServiceResponse<DeleteResult>> => {
-        const userId: Types.ObjectId = toObjectId(userIdParams)
-        const deletedUserInfo: DeleteResult = await UserRepository.deleteOne(userId)
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParams)
+            const deletedUserInfo: DeleteResult = await UserRepository.deleteOne(userId)
 
-        return {
-            statusCode: StatusCode.OK,
-            content: {
-                data: deletedUserInfo,
-                message: "User deleted succesfully"
+            if (deletedUserInfo.deletedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: "User not found",
+                        error: "Not Found Error"
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: deletedUserInfo,
+                    message: "User deleted succesfully"
+                }
+            }   
+        } catch (error) {
+            return {
+                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+                content: {
+                    message: "Error deleting User",
+                    error: String(error)
+                }
             }
         }
     }

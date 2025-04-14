@@ -47,7 +47,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error retrieving transactions",
                 }
             }
@@ -89,7 +89,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error retrieving transactions",
                 }
             }
@@ -131,7 +131,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error retrieving transactions",
                 }
             }
@@ -175,7 +175,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error retrieving transactions",
                 }
             }
@@ -217,7 +217,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error retrieving transactions",
                 }
             }
@@ -273,7 +273,7 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
+                    error: String(error),
                     message: "Error deleting transaction",
                 }
             }
@@ -316,8 +316,8 @@ class TransactionService {
             return {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
-                    error: error,
-                    message: "Error deleting transaction",
+                    error: String(error),
+                    message: "Error updating transaction",
                 }
             }
         }

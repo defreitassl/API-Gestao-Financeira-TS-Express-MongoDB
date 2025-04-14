@@ -35,7 +35,7 @@ class CategoryService {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
                     message: "Error retrieving categories",
-                    error: error
+                    error: String(error)
                 }
             }
         }
@@ -68,7 +68,7 @@ class CategoryService {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
                     message: "Error retrieving category",
-                    error: error
+                    error: String(error)
                 }
             }
         }
@@ -99,7 +99,7 @@ class CategoryService {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
                     message: "Error creating category",
-                    error: error
+                    error: String(error)
                 }
             }
         }
@@ -131,7 +131,7 @@ class CategoryService {
                 statusCode: StatusCode.INTERNAL_SERVER_ERROR,
                 content: {
                     message: "Error deleting category",
-                    error: error
+                    error: String(error)
                 }
             }
         }
