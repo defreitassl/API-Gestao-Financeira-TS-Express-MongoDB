@@ -4,7 +4,7 @@ import DeleteResult from "../types/DeleteRequestResult"
 
 
 class Repository<T> {
-    private model: Model<T>
+    protected model: Model<T>
 
     constructor (model: Model<T>) {
         this.model = model
