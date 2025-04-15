@@ -3,7 +3,7 @@ import UpdateResult from "../types/UpdateRequestResult"
 import DeleteResult from "../types/DeleteRequestResult"
 
 
-class Repository<T> {
+abstract class Repository<T> {
     protected model: Model<T>
 
     constructor (model: Model<T>) {

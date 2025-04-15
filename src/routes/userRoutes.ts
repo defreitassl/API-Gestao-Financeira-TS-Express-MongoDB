@@ -7,12 +7,12 @@ const userController = new UserController()
 
 router.get("/users", userController.getAll)
 
-router.get("/users/:userId", userController.getOne)
+router.get("/users/:id", userController.getOne)
 
 router.post("/users/new", userController.createOne)
 
-router.patch("/users/update/:userId", userController.updateOne)
+router.patch("/users/update/:id", userController.updateOne)
 
-router.delete("/users/delete/:userId", userController.deleteOne)
+router.delete("/users/delete/:id", userController.deleteOne)
 
 export default router

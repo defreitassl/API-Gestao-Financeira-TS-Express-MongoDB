@@ -7,7 +7,7 @@ import UpdateResult from "../types/UpdateRequestResult"
 import DeleteResult from "../types/DeleteRequestResult"
 
 
-class Service<T> {
+abstract class Service<T> {
     protected repository: Repository<T>
     protected entityName: string
 
@@ -15,10 +15,6 @@ class Service<T> {
         this.repository = repository
         this.entityName = entityName
         pluralize()
-    }
-
-    protected toObjectId(id: string): Types.ObjectId {
-        return toObjectId(id)
     }
 
     protected handleError(error: any, defaultMessage: string): ServiceResponse<null> {
@@ -33,7 +29,7 @@ class Service<T> {
         }
     }
 
-    async getAll(): Promise<ServiceResponse<T[] | null>> {
+    getAll = async (): Promise<ServiceResponse<T[] | null>> => {
         try {
             const entities: T[] = await this.repository.getAll()
             const statusCode: StatusCode = entities.length === 0 ? StatusCode.NO_CONTENT : StatusCode.OK
@@ -51,9 +47,9 @@ class Service<T> {
         }
     }
 
-    async getOne(idParam: string): Promise<ServiceResponse<T | null>> {
+    getOne = async (idParam: string): Promise<ServiceResponse<T | null>> => {
         try {
-            const id: Types.ObjectId = this.toObjectId(idParam)
+            const id: Types.ObjectId = toObjectId(idParam)
             const entity: T | null = await this.repository.getOne(id)
 
             if (!entity) {
@@ -74,12 +70,12 @@ class Service<T> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error ${this.entityName} entity`)
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving ${this.entityName}`)
             return errorResponse
         }
     }
 
-    async createOne(data: Partial<T>): Promise<ServiceResponse<T | null>> {
+    createOne = async (data: Partial<T>): Promise<ServiceResponse<T | null>> => {
         try {
             const entity: T = await this.repository.createOne(data)
 
@@ -96,9 +92,9 @@ class Service<T> {
         }
     }
 
-    async updateOne(idParam: string, data: Partial<T>): Promise<ServiceResponse<UpdateResult | null>> {
+    updateOne = async (idParam: string, data: Partial<T>): Promise<ServiceResponse<UpdateResult | null>> => {
         try {
-            const id: Types.ObjectId = this.toObjectId(idParam)
+            const id: Types.ObjectId = toObjectId(idParam)
             const updatedEntityInfo: UpdateResult = await this.repository.updateOne(id, data)
 
             if (!updatedEntityInfo || updatedEntityInfo.matchedCount === 0) {
@@ -125,9 +121,9 @@ class Service<T> {
         }
     }
 
-    async deleteOne(idParam: string): Promise<ServiceResponse<DeleteResult | null>> {
+    deleteOne = async (idParam: string): Promise<ServiceResponse<DeleteResult | null>> => {
         try {
-            const id: Types.ObjectId = this.toObjectId(idParam)
+            const id: Types.ObjectId = toObjectId(idParam)
             const deletedEntityInfo: DeleteResult = await this.repository.deleteOne(id)
 
             if (!deletedEntityInfo || deletedEntityInfo.deletedCount === 0) {

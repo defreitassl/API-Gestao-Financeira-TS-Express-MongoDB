@@ -1,27 +1,12 @@
 import { Request, Response } from "express"
 import CategoryService from "../services/CategoryService"
+import { ICategory } from "../models/CategoryModel"
+import Controller from "./BaseController"
 
 
-class CategoryController {
-
-    getAll = async ( req: Request, res: Response ): Promise<void> => {
-        const response = await CategoryService.getAll()
-        res.status(response.statusCode).json(response.content)
-    }
-
-    getOne = async ( req: Request, res: Response ): Promise<void> => {
-        const response = await CategoryService.getOne(req.params.categoryId)
-        res.status(response.statusCode).json(response.content)
-    }
-    
-    createOne = async ( req: Request, res: Response ): Promise<void> => {
-        const response = await CategoryService.createOne(req.body)
-        res.status(response.statusCode).json(response.content)
-    }
-
-    deleteOne = async ( req: Request, res: Response ): Promise<void> => {
-        const response = await CategoryService.deleteOne(req.params.categoryId)
-        res.status(response.statusCode).json(response.content)
+class CategoryController extends Controller<ICategory> {
+    constructor () {
+        super(CategoryService)
     }
 }
 

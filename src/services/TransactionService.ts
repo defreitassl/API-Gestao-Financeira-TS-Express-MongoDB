@@ -1,16 +1,170 @@
 import { ITransaction } from "../models/TransactionModel"
 import { Types } from "mongoose"
-import toObjectId from "../utils/ToObjectId"
-import TransactionRepository from "../repositories/TransactionRepository"
 import ServiceResponse from "../types/ServiceResponse"
 import StatusCode from "../utils/StatusCode"
 import Service from "./BaseService"
+import TransactionRepository from "../repositories/TransactionRepository"
+import toObjectId from "../utils/ToObjectId"
+import DeleteResult from "../types/DeleteRequestResult"
+import UpdateResult from "../types/UpdateRequestResult"
 
 
 class TransactionService extends Service<ITransaction> {
 
     constructor () {
         super(TransactionRepository, "Transaction")
+    }
+
+    getAllTransactions = async (userIdParam: string): Promise<ServiceResponse<ITransaction[] | null>> => {
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const transactions: ITransaction[] = await TransactionRepository.getAllTransactions(userId)
+
+            const statusCode: StatusCode = transactions.length === 0 ? StatusCode.NO_CONTENT : StatusCode.OK
+            
+            return {
+                statusCode: statusCode,
+                content: {
+                    data: transactions,
+                    message: `Transactions retrieved successfully`,
+                }
+            }
+        } catch (error) {
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving ${this.entityName}s`)
+            return errorResponse
+        }
+    }
+
+    getOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<ITransaction | null>> => {
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+
+            const transaction: ITransaction | null = await TransactionRepository.getOneTransaction(transactionId, userId)
+
+            if (!transaction) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: `Transaction not found`,
+                        error: "Not Found Error"
+                    }
+                }
+            }
+
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: transaction,
+                    message: `Transaction retrieved successfully`
+                }
+            }
+        } catch (error) {
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving transaction`)
+            return errorResponse
+        }
+    }
+
+    createOneTransaction = async (userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<ITransaction | null>> => {
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const transaction: ITransaction = await TransactionRepository.createOneTransaction(data)
+            
+            if (Types.ObjectId.isValid(transaction.id) === true) {
+                const updatedUserInfo: ITransaction | null = await TransactionRepository.pushTransactionOnUser(userId, transaction.id)
+                if (!updatedUserInfo) {
+                    return {
+                        statusCode: StatusCode.NOT_FOUND,
+                        content: {
+                            message: `User not found | Invalid ID aaaaa`,
+                            error: "Not Found Error"
+                        }
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.CREATED,
+                content: {
+                    data: transaction,
+                    message: `Transaction created successfully`
+                }
+            }
+        } catch (error) {
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error creating transaction`)
+            return errorResponse
+        }
+    }
+
+    updateOneTransaction = async (transactionIdParam: string, userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<UpdateResult | null>> => {
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+
+            const updatedTransactionInfo: UpdateResult = await TransactionRepository.updateOneTransaction(transactionId, userId, data)
+
+            if (!updatedTransactionInfo || updatedTransactionInfo.matchedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        data: updatedTransactionInfo,
+                        message: `Transaction not found`,
+                        error: "Not Found Error"
+                    }
+                }
+            }
+
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: updatedTransactionInfo,
+                    message: `Transaction updated successfully`
+                }
+            }
+        } catch (error) {
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error updating transaction`)
+            return errorResponse
+        }
+    }
+
+    deleteOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<DeleteResult | null>> => {
+        try {
+            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+
+            const deletedTransactionInfo: DeleteResult = await TransactionRepository.deleteOneTransaction(transactionId, userId)
+
+            if (!deletedTransactionInfo || deletedTransactionInfo.deletedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: `Trasaction not found`,
+                        error: "Not Found Error"
+                    }
+                }
+            }
+
+            const updatedUserInfo: UpdateResult | null = await TransactionRepository.pullTransactionFromUser(userId, transactionId)
+
+            if (updatedUserInfo?.matchedCount === 0) {
+                return {
+                    statusCode: StatusCode.NOT_FOUND,
+                    content: {
+                        message: `User or Transaction not found | Invalid ID`,
+                        error: "Not Found Error"
+                    }
+                }
+            }
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: deletedTransactionInfo,
+                    message: `${this.entityName} deleted successfully`
+                }
+            }
+        } catch (error) {
+            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error deleting transaction`)
+            return errorResponse
+        }
     }
 
     getInflows = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {

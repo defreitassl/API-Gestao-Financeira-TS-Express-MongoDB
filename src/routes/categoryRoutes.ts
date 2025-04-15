@@ -8,9 +8,9 @@ const categoryController = new CategoryController()
 
 router.get("/categories", categoryController.getAll)
 
-router.get("/categories/:categoryId", categoryController.getOne)
+router.get("/categories/:id", categoryController.getOne)
 
-router.delete("/categories/:categoryId", categoryController.deleteOne)
+router.delete("/categories/:id", categoryController.deleteOne)
 
 router.post("/categories/new", categoryController.createOne)
 
