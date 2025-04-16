@@ -10,7 +10,12 @@ class UserRepository extends Repository<IUser> {
         super(User)
     }
 
-    //Adicionar novas funções específicas aqui
+    getOneByEmail = async (email: string): Promise<IUser | null> => {
+        const user: IUser | null = await User
+        .findOne({ email: email })
+        
+        return user
+    }
 }
 
 export default new UserRepository()

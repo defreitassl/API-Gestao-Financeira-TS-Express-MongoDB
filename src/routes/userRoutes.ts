@@ -9,7 +9,7 @@ router.get("/users", userController.getAll)
 
 router.get("/users/:id", userController.getOne)
 
-router.post("/users/new", userController.createOne)
+router.post("/users/new", userController.createOneUser)
 
 router.patch("/users/update/:id", userController.updateOne)
 

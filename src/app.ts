@@ -1,7 +1,8 @@
-import express, {Express, json} from 'express'
+import express, {Express, json, urlencoded} from 'express'
 import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/userRoutes'
 import categoryRoutes from './routes/categoryRoutes'
+import errorHandler from './middlewares/errorHandler'
 
 const createApp = (): Express => {
 
@@ -10,6 +11,7 @@ const createApp = (): Express => {
     app.use(transactionRoutes)
     app.use(userRoutes)
     app.use(categoryRoutes)
+    app.use(errorHandler)
 
 
     return app

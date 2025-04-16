@@ -15,7 +15,7 @@ class TransactionService extends Service<ITransaction> {
         super(TransactionRepository, "Transaction")
     }
 
-    getAllTransactions = async (userIdParam: string): Promise<ServiceResponse<ITransaction[] | null>> => {
+    getAllTransactions = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactions: ITransaction[] = await TransactionRepository.getAllTransactions(userId)
@@ -30,12 +30,14 @@ class TransactionService extends Service<ITransaction> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving ${this.entityName}s`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    getOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<ITransaction | null>> => {
+    getOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<ITransaction>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
@@ -60,12 +62,14 @@ class TransactionService extends Service<ITransaction> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving transaction`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    createOneTransaction = async (userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<ITransaction | null>> => {
+    createOneTransaction = async (userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<ITransaction>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transaction: ITransaction = await TransactionRepository.createOneTransaction(data)
@@ -90,12 +94,14 @@ class TransactionService extends Service<ITransaction> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error creating transaction`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    updateOneTransaction = async (transactionIdParam: string, userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<UpdateResult | null>> => {
+    updateOneTransaction = async (transactionIdParam: string, userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<UpdateResult>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
@@ -121,12 +127,14 @@ class TransactionService extends Service<ITransaction> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error updating transaction`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    deleteOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<DeleteResult | null>> => {
+    deleteOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<DeleteResult>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
@@ -162,8 +170,10 @@ class TransactionService extends Service<ITransaction> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error deleting transaction`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
@@ -191,21 +201,9 @@ class TransactionService extends Service<ITransaction> {
             }
         } catch (error) {
             if (error instanceof Error) {
-                return {
-                    statusCode: StatusCode.BAD_REQUEST,
-                    content: {
-                        message: error.message,
-                        error: error.name
-                    }
-                }
+                throw error
             }
-            return {
-                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
-                content: {
-                    error: String(error),
-                    message: "Error retrieving transactions",
-                }
-            }
+            throw new Error()
         }
     }
 
@@ -233,21 +231,9 @@ class TransactionService extends Service<ITransaction> {
             }
         } catch (error) {
             if (error instanceof Error) {
-                return {
-                    statusCode: StatusCode.BAD_REQUEST,
-                    content: {
-                        message: error.message,
-                        error: error.name
-                    }
-                }
+                throw error
             }
-            return {
-                statusCode: StatusCode.INTERNAL_SERVER_ERROR,
-                content: {
-                    error: String(error),
-                    message: "Error retrieving transactions",
-                }
-            }
+            throw new Error()
         }
     }
 }

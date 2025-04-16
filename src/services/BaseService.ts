@@ -5,6 +5,7 @@ import StatusCode from "../utils/StatusCode"
 import Repository from "../repositories/BaseRepository"
 import UpdateResult from "../types/UpdateRequestResult"
 import DeleteResult from "../types/DeleteRequestResult"
+import { BadRequestError, NotFoundError } from "../errors"
 
 
 abstract class Service<T> {
@@ -17,50 +18,35 @@ abstract class Service<T> {
         pluralize()
     }
 
-    protected handleError(error: any, defaultMessage: string): ServiceResponse<null> {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error"
-
-        return {
-            statusCode: StatusCode.INTERNAL_SERVER_ERROR,
-            content: {
-                message: defaultMessage,
-                error: errorMessage,
-            }
-        }
-    }
-
-    getAll = async (): Promise<ServiceResponse<T[] | null>> => {
+    getAll = async (): Promise<ServiceResponse<T[]>> => {
         try {
             const entities: T[] = await this.repository.getAll()
-            const statusCode: StatusCode = entities.length === 0 ? StatusCode.NO_CONTENT : StatusCode.OK
+            const message: string = entities.length === 0 ? `No ${this.entityName} found` : `${this.entityName}s retrieved successfully`
 
             return {
-                statusCode: statusCode,
+                statusCode: StatusCode.OK,
                 content: {
                     data: entities,
-                    message: `${this.entityName}s retrieved successfully`,
+                    message: message,
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving ${this.entityName}s`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    getOne = async (idParam: string): Promise<ServiceResponse<T | null>> => {
+    getOne = async (idParam: string): Promise<ServiceResponse<T>> => {
         try {
             const id: Types.ObjectId = toObjectId(idParam)
+
+            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+
             const entity: T | null = await this.repository.getOne(id)
 
-            if (!entity) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        message: `${this.entityName} not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            if (!entity) throw new NotFoundError(`${this.entityName} not found | Wrong id`)
 
             return {
                 statusCode: StatusCode.OK,
@@ -70,13 +56,17 @@ abstract class Service<T> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error retrieving ${this.entityName}`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    createOne = async (data: Partial<T>): Promise<ServiceResponse<T | null>> => {
+    createOne = async (data: Partial<T>): Promise<ServiceResponse<T>> => {
         try {
+            if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing ${this.entityName} data`)
+
             const entity: T = await this.repository.createOne(data)
 
             return {
@@ -87,26 +77,23 @@ abstract class Service<T> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error creating ${this.entityName}`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    updateOne = async (idParam: string, data: Partial<T>): Promise<ServiceResponse<UpdateResult | null>> => {
+    updateOne = async (idParam: string, data: Partial<T>): Promise<ServiceResponse<UpdateResult>> => {
         try {
             const id: Types.ObjectId = toObjectId(idParam)
+
+            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing ${this.entityName} data`)
+                
             const updatedEntityInfo: UpdateResult = await this.repository.updateOne(id, data)
 
-            if (!updatedEntityInfo || updatedEntityInfo.matchedCount === 0) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        data: updatedEntityInfo,
-                        message: `${this.entityName} not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            if (!updatedEntityInfo || updatedEntityInfo.matchedCount === 0) throw new NotFoundError(`${this.entityName} not found | Wrong id`)
 
             return {
                 statusCode: StatusCode.OK,
@@ -116,25 +103,22 @@ abstract class Service<T> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error updating ${this.entityName}`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 
-    deleteOne = async (idParam: string): Promise<ServiceResponse<DeleteResult | null>> => {
+    deleteOne = async (idParam: string): Promise<ServiceResponse<DeleteResult>> => {
         try {
             const id: Types.ObjectId = toObjectId(idParam)
+
+            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+
             const deletedEntityInfo: DeleteResult = await this.repository.deleteOne(id)
 
-            if (!deletedEntityInfo || deletedEntityInfo.deletedCount === 0) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        message: `${this.entityName} not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            if (!deletedEntityInfo || deletedEntityInfo.deletedCount === 0) throw new NotFoundError(`${this.entityName} not found | Wrong id`)
 
             return {
                 statusCode: StatusCode.OK,
@@ -144,8 +128,10 @@ abstract class Service<T> {
                 }
             }
         } catch (error) {
-            const errorResponse: ServiceResponse<null> = this.handleError(error, `Error deleting ${this.entityName}`)
-            return errorResponse
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
         }
     }
 }
