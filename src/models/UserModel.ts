@@ -5,8 +5,8 @@ export interface IUser extends Document {
     name: string,
     email: string,
     password: string,
-    balance?: number,
-    transactions?: Schema.Types.ObjectId[]
+    balance: number,
+    transactions: Schema.Types.ObjectId[]
 }
 
 const userSchema = new Schema<IUser>({

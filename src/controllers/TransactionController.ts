@@ -1,14 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import TransactionService from '../services/TransactionService'
-import Controller from './BaseController'
-import { ITransaction } from '../models/TransactionModel'
 
 
-class TransactionController extends Controller<ITransaction> {
-
-    constructor () {
-        super(TransactionService)
-    }
+class TransactionController {
 
     getAll = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {

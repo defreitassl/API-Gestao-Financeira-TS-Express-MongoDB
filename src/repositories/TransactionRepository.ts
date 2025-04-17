@@ -1,17 +1,12 @@
 import { Types } from "mongoose"
 import { ITransaction } from "../models/TransactionModel"
 import Transaction from "../models/TransactionModel"
-import User from "../models/UserModel"
+import User, { IUser } from "../models/UserModel"
 import DeleteResult from "../types/DeleteRequestResult"
 import UpdateResult from "../types/UpdateRequestResult"
-import Repository from "./BaseRepository"
 
 
-class TransactionRepository extends Repository<ITransaction> {
-
-    constructor() {
-        super(Transaction)
-    }
+class TransactionRepository{
 
     getAllTransactions = async (userId: Types.ObjectId): Promise<ITransaction[]> => {
         const transactions: ITransaction[] = await Transaction
@@ -73,16 +68,16 @@ class TransactionRepository extends Repository<ITransaction> {
         return outflowsTransactions
     }
 
-    pushTransactionOnUser = async (userId: Types.ObjectId, transactionId: Types.ObjectId): Promise<ITransaction | null> => {
-        const requestInfo: ITransaction | null = await User.findByIdAndUpdate(userId, {
+    pushTransactionOnUser = async (userId: Types.ObjectId, transactionId: Types.ObjectId): Promise<IUser | null> => {
+        const requestInfo: IUser | null = await User.findByIdAndUpdate(userId, {
             $push: { transactions: transactionId }
         })
 
         return requestInfo
     }
 
-    pullTransactionFromUser = async (userId: Types.ObjectId, transactionId: Types.ObjectId): Promise<UpdateResult | null> => {
-        const requestInfo: UpdateResult | null = await User.findByIdAndUpdate(userId, {
+    pullTransactionFromUser = async (userId: Types.ObjectId, transactionId: Types.ObjectId): Promise<IUser | null> => {
+        const requestInfo: IUser | null = await User.findByIdAndUpdate(userId, {
             $pull: { transactions: transactionId }
         })
 

@@ -2,28 +2,24 @@ import { ITransaction } from "../models/TransactionModel"
 import { Types } from "mongoose"
 import ServiceResponse from "../types/ServiceResponse"
 import StatusCode from "../utils/StatusCode"
-import Service from "./BaseService"
 import TransactionRepository from "../repositories/TransactionRepository"
 import toObjectId from "../utils/ToObjectId"
 import DeleteResult from "../types/DeleteRequestResult"
 import UpdateResult from "../types/UpdateRequestResult"
+import UserRepository from "../repositories/UserRepository"
+import { IUser } from "../models/UserModel"
+import { BadRequestError, NotFoundError, UnprocessableEntityError } from "../errors"
 
 
-class TransactionService extends Service<ITransaction> {
-
-    constructor () {
-        super(TransactionRepository, "Transaction")
-    }
+class TransactionService{
 
     getAllTransactions = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {
         try {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactions: ITransaction[] = await TransactionRepository.getAllTransactions(userId)
 
-            const statusCode: StatusCode = transactions.length === 0 ? StatusCode.NO_CONTENT : StatusCode.OK
-            
             return {
-                statusCode: statusCode,
+                statusCode: StatusCode.OK,
                 content: {
                     data: transactions,
                     message: `Transactions retrieved successfully`,
@@ -71,21 +67,36 @@ class TransactionService extends Service<ITransaction> {
 
     createOneTransaction = async (userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<ITransaction>> => {
         try {
+            if ( // Verifies if the User data object exists and has any properties
+                !data 
+                || Object.keys(data).length === 0
+            ) throw new BadRequestError(`Missing User data`)
+
+            if ( // Verifies if all the required user fields are present
+                !data.userId 
+                ||!data.categoryId
+                || !data.name 
+                || !data.amount 
+                || !(typeof data.inflow === 'boolean')
+                || !data.paymentMethod
+            ) throw new UnprocessableEntityError("Missing Transaction required fields")
+
             const userId: Types.ObjectId = toObjectId(userIdParam)
+            if (!Types.ObjectId.isValid(userIdParam)) throw new BadRequestError("Invalid User Id param")
+
+            const user: IUser | null = await UserRepository.getOne(userId)
+            if (!user) throw new NotFoundError("User Not Found | Invalid Id param")
+
             const transaction: ITransaction = await TransactionRepository.createOneTransaction(data)
+
+            const newBalanceAmount: number = transaction.inflow ? (user.balance + transaction.amount) : (user.balance - transaction.amount)
+            const updatedUserBalanceInfo: UpdateResult = await UserRepository.updateUserBalance(newBalanceAmount, userId)
+
+            if (updatedUserBalanceInfo.modifiedCount === 0) throw new Error()
             
-            if (Types.ObjectId.isValid(transaction.id) === true) {
-                const updatedUserInfo: ITransaction | null = await TransactionRepository.pushTransactionOnUser(userId, transaction.id)
-                if (!updatedUserInfo) {
-                    return {
-                        statusCode: StatusCode.NOT_FOUND,
-                        content: {
-                            message: `User not found | Invalid ID aaaaa`,
-                            error: "Not Found Error"
-                        }
-                    }
-                }
-            }
+            const updatedUserInfo: IUser | null = await TransactionRepository.pushTransactionOnUser(userId, transaction.id)
+            if (!updatedUserInfo) throw new Error()
+            
             return {
                 statusCode: StatusCode.CREATED,
                 content: {
@@ -108,7 +119,7 @@ class TransactionService extends Service<ITransaction> {
 
             const updatedTransactionInfo: UpdateResult = await TransactionRepository.updateOneTransaction(transactionId, userId, data)
 
-            if (!updatedTransactionInfo || updatedTransactionInfo.matchedCount === 0) {
+            if (!updatedTransactionInfo || updatedTransactionInfo.modifiedCount === 0) {
                 return {
                     statusCode: StatusCode.NOT_FOUND,
                     content: {
@@ -139,34 +150,35 @@ class TransactionService extends Service<ITransaction> {
             const userId: Types.ObjectId = toObjectId(userIdParam)
             const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
 
+            if ( // Verifies if the transaction IDs are valid IDs
+                !Types.ObjectId.isValid(userId) 
+                || !Types.ObjectId.isValid(transactionId)
+            ) throw new BadRequestError("Invalid User Id or Transaction Id param")
+
+            const transaction: ITransaction | null = await TransactionRepository.getOneTransaction(transactionId, userId)
+            if (!transaction) throw new NotFoundError("Transaction not found")
+
+            const user: IUser | null = await UserRepository.getOne(userId)
+            if (!user) throw new NotFoundError("User not found | Couldn't update user balance and transactions")
+
             const deletedTransactionInfo: DeleteResult = await TransactionRepository.deleteOneTransaction(transactionId, userId)
+            if ( // Verifies if mongoose could find the transaction and deleted it
+                deletedTransactionInfo.deletedCount === 0
+            ) throw new NotFoundError("Transaction not found | Couldn't delete the transaction")
 
-            if (!deletedTransactionInfo || deletedTransactionInfo.deletedCount === 0) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        message: `Trasaction not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            const newBalanceAmount: number = transaction.inflow ? (user.balance - transaction.amount) : (user.balance + transaction.amount)
+            
+            const updatedUserBalanceInfo: UpdateResult = await UserRepository.updateUserBalance(newBalanceAmount, userId)
+            if (updatedUserBalanceInfo.modifiedCount === 0) throw new Error()
 
-            const updatedUserInfo: UpdateResult | null = await TransactionRepository.pullTransactionFromUser(userId, transactionId)
+            const updatedUserInfo: IUser | null = await TransactionRepository.pullTransactionFromUser(userId, transactionId)
+            if (!updatedUserInfo) throw new Error()
 
-            if (updatedUserInfo?.matchedCount === 0) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        message: `User or Transaction not found | Invalid ID`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
             return {
                 statusCode: StatusCode.OK,
                 content: {
                     data: deletedTransactionInfo,
-                    message: `${this.entityName} deleted successfully`
+                    message: `Transaction deleted successfully`
                 }
             }
         } catch (error) {

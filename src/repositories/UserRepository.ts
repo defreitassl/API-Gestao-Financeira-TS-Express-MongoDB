@@ -16,6 +16,14 @@ class UserRepository extends Repository<IUser> {
         
         return user
     }
+
+    updateUserBalance = async (newAmount: number, userId: Types.ObjectId): Promise<UpdateResult> => {
+        const requestInfo: UpdateResult = await User
+        .where("_id").equals(userId)
+        .updateOne({ balance: newAmount})
+
+        return requestInfo
+    }
 }
 
 export default new UserRepository()
