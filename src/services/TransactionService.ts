@@ -15,14 +15,20 @@ class TransactionService{
 
     getAllTransactions = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
+
             const transactions: ITransaction[] = await TransactionRepository.getAllTransactions(userId)
+
+            const message: string = transactions.length === 0
+            ? "No transactions found"
+            : "`Transactions retrieved successfully"
 
             return {
                 statusCode: StatusCode.OK,
                 content: {
                     data: transactions,
-                    message: `Transactions retrieved successfully`,
+                    message: message,
                 }
             }
         } catch (error) {
@@ -35,20 +41,15 @@ class TransactionService{
 
     getOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<ITransaction>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
-            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
+
+            const transactionId: Types.ObjectId | false = toObjectId(transactionIdParam)
+            if (!transactionId) throw new BadRequestError("Invalid transaction Id param")
 
             const transaction: ITransaction | null = await TransactionRepository.getOneTransaction(transactionId, userId)
 
-            if (!transaction) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        message: `Transaction not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            if (!transaction) throw new NotFoundError("Transaction not found | Invalid user Id or transaction Id")
 
             return {
                 statusCode: StatusCode.OK,
@@ -67,6 +68,9 @@ class TransactionService{
 
     createOneTransaction = async (userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<ITransaction>> => {
         try {
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
+
             if ( // Verifies if the User data object exists and has any properties
                 !data 
                 || Object.keys(data).length === 0
@@ -80,9 +84,6 @@ class TransactionService{
                 || !(typeof data.inflow === 'boolean')
                 || !data.paymentMethod
             ) throw new UnprocessableEntityError("Missing Transaction required fields")
-
-            const userId: Types.ObjectId = toObjectId(userIdParam)
-            if (!Types.ObjectId.isValid(userIdParam)) throw new BadRequestError("Invalid User Id param")
 
             const user: IUser | null = await UserRepository.getOne(userId)
             if (!user) throw new NotFoundError("User Not Found | Invalid Id param")
@@ -114,21 +115,23 @@ class TransactionService{
 
     updateOneTransaction = async (transactionIdParam: string, userIdParam: string, data: Partial<ITransaction>): Promise<ServiceResponse<UpdateResult>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
-            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+            if ( // Verifies if the User data object exists and has any properties
+                !data 
+                || Object.keys(data).length === 0
+            ) throw new BadRequestError(`Missing User data`)
+            
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
+
+            const transactionId: Types.ObjectId | false = toObjectId(transactionIdParam)
+            if (!transactionId) throw new BadRequestError("Invalid transaction Id param")
 
             const updatedTransactionInfo: UpdateResult = await TransactionRepository.updateOneTransaction(transactionId, userId, data)
 
-            if (!updatedTransactionInfo || updatedTransactionInfo.modifiedCount === 0) {
-                return {
-                    statusCode: StatusCode.NOT_FOUND,
-                    content: {
-                        data: updatedTransactionInfo,
-                        message: `Transaction not found`,
-                        error: "Not Found Error"
-                    }
-                }
-            }
+            if ( // Verifies if mongoose could find and modify the transaction
+                updatedTransactionInfo.matchedCount === 0
+                || updatedTransactionInfo.modifiedCount === 0
+            ) throw new NotFoundError("Transaction not found | Couldn't update transaction")
 
             return {
                 statusCode: StatusCode.OK,
@@ -147,13 +150,12 @@ class TransactionService{
 
     deleteOneTransaction = async (transactionIdParam: string, userIdParam: string): Promise<ServiceResponse<DeleteResult>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
-            const transactionId: Types.ObjectId = toObjectId(transactionIdParam)
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
 
-            if ( // Verifies if the transaction IDs are valid IDs
-                !Types.ObjectId.isValid(userId) 
-                || !Types.ObjectId.isValid(transactionId)
-            ) throw new BadRequestError("Invalid User Id or Transaction Id param")
+            const transactionId: Types.ObjectId | false = toObjectId(transactionIdParam)
+            if (!transactionId) throw new BadRequestError("Invalid transaction Id param")
+
 
             const transaction: ITransaction | null = await TransactionRepository.getOneTransaction(transactionId, userId)
             if (!transaction) throw new NotFoundError("Transaction not found")
@@ -191,24 +193,20 @@ class TransactionService{
 
     getInflows = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
 
             const inflowsTransactions: ITransaction[] = await TransactionRepository.getInflows(userId)
 
-            if (inflowsTransactions.length === 0) {
-                return {
-                    statusCode: StatusCode.NO_CONTENT,
-                    content: {
-                        data: inflowsTransactions,
-                        message: "No Inflow transactions found"
-                    }
-                }
-            }
+            const message: string = inflowsTransactions.length === 0 
+            ? "No Inflows transactions found" 
+            : "Inflows transactions retrieved successfully"
+            
             return {
                 statusCode: StatusCode.OK,
                 content: {
                     data: inflowsTransactions,
-                    message: "Inflows transactions retrieved successfully"
+                    message: message
                 }
             }
         } catch (error) {
@@ -221,24 +219,20 @@ class TransactionService{
 
     getOutflows = async (userIdParam: string): Promise<ServiceResponse<ITransaction[]>> => {
         try {
-            const userId: Types.ObjectId = toObjectId(userIdParam)
+            const userId: Types.ObjectId | false = toObjectId(userIdParam)
+            if (!userId) throw new BadRequestError("Invalid user Id param")
 
             const outflowsTransactions: ITransaction[] = await TransactionRepository.getOutflows(userId)
 
-            if (outflowsTransactions.length === 0) {
-                return {
-                    statusCode: StatusCode.NO_CONTENT,
-                    content: {
-                        data: outflowsTransactions,
-                        message: "No Inflow transactions found"
-                    }
-                }
-            }
+            const message: string = outflowsTransactions.length === 0 
+            ? "No Outflows transactions found" 
+            : "Outflows transactions retrieved successfully"
+
             return {
                 statusCode: StatusCode.OK,
                 content: {
                     data: outflowsTransactions,
-                    message: "Inflows transactions retrieved successfully"
+                    message: message
                 }
             }
         } catch (error) {
