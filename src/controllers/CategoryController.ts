@@ -1,4 +1,3 @@
-import { Request, Response } from "express"
 import CategoryService from "../services/CategoryService"
 import { ICategory } from "../models/CategoryModel"
 import Controller from "./BaseController"

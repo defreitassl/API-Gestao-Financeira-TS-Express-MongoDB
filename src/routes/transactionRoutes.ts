@@ -1,25 +1,23 @@
 import { Router } from 'express'
 import TransactionController from '../controllers/TransactionController'
+import authMiddleware from '../middlewares/authenticateMiddleware'
 
 const router = Router()
 const transactionController = new TransactionController()
 
 
-router.get("/:userId/transactions", transactionController.getAll)
+router.get("/transactions", authMiddleware, transactionController.getAll)
 
-router.post("/:userId/transactions/new", transactionController.createOne)
+router.post("/transactions/new", authMiddleware, transactionController.createOne)
 
-router.delete("/:userId/transactions/:transactionId", transactionController.deleteOne)
+router.delete("/transactions/:transactionId", authMiddleware, transactionController.deleteOne)
 
-router.patch("/:userId/transactions/:transactionId", transactionController.updateOne)
+router.patch("/transactions/:transactionId", authMiddleware, transactionController.updateOne)
 
-router.get("/:userId/transactions/inflows", transactionController.getInflows)
+router.get("/transactions/inflows", authMiddleware, transactionController.getInflows)
 
-router.get("/:userId/transactions/outflows", transactionController.getOutflows)
+router.get("/transactions/outflows", authMiddleware, transactionController.getOutflows)
 
-router.get("/:userId/transactions/:transactionId", transactionController.getOne)
-
-
-// ADICIONAR VALIDACAO DE ID COM FUNCAO ObjectId.isValid()
+router.get("/transactions/:transactionId", authMiddleware, transactionController.getOne)
 
 export default router

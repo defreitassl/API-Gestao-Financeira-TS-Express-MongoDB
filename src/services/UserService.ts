@@ -14,32 +14,6 @@ class UserService extends Service<IUser> {
         super(UserRepository, "User")
     }
 
-    createOneUser = async (data: Partial<IUser>): Promise<ServiceResponse<IUser>> => {
-        try {
-            if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing User data`)
-            if (!data.name || !data.email || !data.password) throw new UnprocessableEntityError("Missing User required fields (name, email or password)")
-            
-            const existingEmail = await UserRepository.getOneByEmail(data.email)
-
-            if (existingEmail) throw new ConflictError("User Email already exists")
-
-            const user = await UserRepository.createOne(data)
-
-            return {
-                statusCode: StatusCode.CREATED,
-                content: {
-                    data: user,
-                    message: `User created successfully`
-                }
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error
-            }
-            throw new Error()
-        }
-    }
-
     updateOneUser = async (idParam: string, data: Partial<IUser>): Promise<ServiceResponse<UpdateResult>> => {
         try {
             if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing User data`)

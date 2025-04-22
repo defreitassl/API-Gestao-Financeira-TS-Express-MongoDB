@@ -6,7 +6,7 @@ class TransactionController {
 
     getAll = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
-            const response = await TransactionService.getAllTransactions(req.params.userId)
+            const response = await TransactionService.getAllTransactions(req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -15,7 +15,7 @@ class TransactionController {
 
     getOne = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
-            const response = await TransactionService.getOneTransaction(req.params.transactionId, req.params.userId)
+            const response = await TransactionService.getOneTransaction(req.params.transactionId, req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -24,7 +24,7 @@ class TransactionController {
 
     createOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await TransactionService.createOneTransaction(req.params.userId, req.body)
+            const response = await TransactionService.createOneTransaction(req.user!.id, req.body)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -33,7 +33,7 @@ class TransactionController {
 
     updateOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await TransactionService.updateOneTransaction(req.params.transactionId, req.params.userId, req.body)
+            const response = await TransactionService.updateOneTransaction(req.params.transactionId, req.user!.id, req.body)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -42,7 +42,7 @@ class TransactionController {
 
     deleteOne = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
-            const response = await TransactionService.deleteOneTransaction(req.params.transactionId, req.params.userId)
+            const response = await TransactionService.deleteOneTransaction(req.params.transactionId, req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -51,7 +51,7 @@ class TransactionController {
 
     getInflows = async (req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
-            const response = await TransactionService.getInflows(req.params.userId)
+            const response = await TransactionService.getInflows(req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -60,7 +60,7 @@ class TransactionController {
 
     getOutflows = async (req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
-            const response = await TransactionService.getOutflows(req.params.userId)
+            const response = await TransactionService.getOutflows(req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)

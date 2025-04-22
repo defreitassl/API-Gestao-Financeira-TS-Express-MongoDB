@@ -9,15 +9,6 @@ class UserController extends Controller<IUser> {
         super(UserService)
     }
 
-    createOneUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const response = await UserService.createOneUser(req.body)
-            res.status(response.statusCode).json(response.content)
-        } catch (error) {
-            next(error)
-        }
-    }
-
     updateOneUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const response = await UserService.updateOneUser(req.params.id, req.body)

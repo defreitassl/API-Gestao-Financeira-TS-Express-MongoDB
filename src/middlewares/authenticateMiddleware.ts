@@ -15,8 +15,11 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
     } else {
         try {
             const decodedToken = verifyToken(token)
-            console.log(decodedToken)
-            if (!decodedToken.id || !decodedToken.email) throw new UnauthorizedError("Invalid token provided | Missing User data")
+            if (
+                !decodedToken.id 
+                || !decodedToken.email
+            ) throw new UnauthorizedError("Invalid or expired token provided | Missing User data")
+            
             req.user = { id: decodedToken.id, email: decodedToken.email}
             next()
         } catch (error) {
