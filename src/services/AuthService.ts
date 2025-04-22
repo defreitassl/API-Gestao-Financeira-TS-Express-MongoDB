@@ -31,7 +31,7 @@ class AuthService {
             data.password = hashedPassword
 
             const user: IUser = await UserRepository.createOne(data)
-            const { password, transactions, ...userWithoutPassword } = user
+            const { password, transactions, ...userWithoutPassword } = user.toObject()
 
             const token: string = generateToken({ id: user.id, email: user.email })
 
@@ -69,7 +69,7 @@ class AuthService {
             const isCorrectPassword: boolean = await comparePassword(data.password, user.password)
             if (!isCorrectPassword) throw new UnauthorizedError("Invalid user credentials")
 
-            const { password, transactions, ...userWithoutPassword } = user
+            const { password, transactions, ...userWithoutPassword } = user.toObject()
 
             const token: string = generateToken({ id: user.id, email: user.email })
 
@@ -89,17 +89,6 @@ class AuthService {
         }
     }
 
-    logout = async (): Promise<AuthServiceResponse> => {
-        try {
-            
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error
-            }
-            throw new Error()
-        }
-    }
-
     me = async (userId: string): Promise<AuthServiceResponse> => {
         try {
             const id: Types.ObjectId | false = toObjectId(userId)
@@ -108,7 +97,7 @@ class AuthService {
             const user: IUser | null = await UserRepository.getOne(id)
             if(!user) throw new NotFoundError("Cannot find user in database | Invalid session credentials")
 
-            const { password, ...userWithoutPassword } = user
+            const { password, ...userWithoutPassword } = user.toObject()
 
             return {
                 statusCode: StatusCode.OK,

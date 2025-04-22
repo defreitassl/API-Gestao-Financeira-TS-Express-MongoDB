@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import StatusCode from "../types/StatusCode"
 import { verifyToken } from "../utils/jwt"
+import { UnauthorizedError } from "../errors"
 
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -14,7 +15,8 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
     } else {
         try {
             const decodedToken = verifyToken(token)
-            if (!decodedToken.id || !decodedToken.email)
+            console.log(decodedToken)
+            if (!decodedToken.id || !decodedToken.email) throw new UnauthorizedError("Invalid token provided | Missing User data")
             req.user = { id: decodedToken.id, email: decodedToken.email}
             next()
         } catch (error) {

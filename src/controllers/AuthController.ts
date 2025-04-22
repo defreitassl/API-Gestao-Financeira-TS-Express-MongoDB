@@ -22,18 +22,10 @@ class AuthController {
         }
     }
 
-    logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const response = await AuthService.logout()
-            res.status(response.statusCode).json(response.content)
-        } catch (error) {
-            next(error)
-        }
-    }
 
     me = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await AuthService.me(req.userId)
+            const response = await AuthService.me(req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
