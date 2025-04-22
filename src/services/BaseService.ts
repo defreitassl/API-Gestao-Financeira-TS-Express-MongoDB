@@ -1,7 +1,7 @@
 import { Types, pluralize } from "mongoose"
-import toObjectId from "../utils/ToObjectId"
+import toObjectId from "../utils/toObjectId"
 import ServiceResponse from "../types/ServiceResponse"
-import StatusCode from "../utils/StatusCode"
+import StatusCode from "../types/StatusCode"
 import Repository from "../repositories/BaseRepository"
 import UpdateResult from "../types/UpdateRequestResult"
 import DeleteResult from "../types/DeleteRequestResult"
@@ -40,9 +40,9 @@ abstract class Service<T> {
 
     getOne = async (idParam: string): Promise<ServiceResponse<T>> => {
         try {
-            const id: Types.ObjectId = toObjectId(idParam)
+            const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
 
             const entity: T | null = await this.repository.getOne(id)
 
@@ -86,9 +86,9 @@ abstract class Service<T> {
 
     updateOne = async (idParam: string, data: Partial<T>): Promise<ServiceResponse<UpdateResult>> => {
         try {
-            const id: Types.ObjectId = toObjectId(idParam)
+            const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
             if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing ${this.entityName} data`)
                 
             const updatedEntityInfo: UpdateResult = await this.repository.updateOne(id, data)
@@ -112,9 +112,9 @@ abstract class Service<T> {
 
     deleteOne = async (idParam: string): Promise<ServiceResponse<DeleteResult>> => {
         try {
-            const id: Types.ObjectId = toObjectId(idParam)
+            const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
 
             const deletedEntityInfo: DeleteResult = await this.repository.deleteOne(id)
 

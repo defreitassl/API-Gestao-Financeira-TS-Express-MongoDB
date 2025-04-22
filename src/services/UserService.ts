@@ -4,9 +4,9 @@ import { IUser } from "../models/UserModel"
 import UserRepository from "../repositories/UserRepository"
 import ServiceResponse from "../types/ServiceResponse"
 import UpdateResult from "../types/UpdateRequestResult"
-import StatusCode from "../utils/StatusCode"
+import StatusCode from "../types/StatusCode"
 import Service from "./BaseService"
-import toObjectId from "../utils/ToObjectId"
+import toObjectId from "../utils/toObjectId"
 
 
 class UserService extends Service<IUser> {
@@ -44,9 +44,9 @@ class UserService extends Service<IUser> {
         try {
             if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing User data`)
             
-            const id: Types.ObjectId = toObjectId(idParam)
+            const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
 
             const updatedUserInfo: UpdateResult = await UserRepository.updateOne(id, data)
             

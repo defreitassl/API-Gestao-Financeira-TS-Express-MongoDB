@@ -1,5 +1,5 @@
 import AppError from "./AppError"
-import StatusCode from "../utils/StatusCode";
+import StatusCode from "../types/StatusCode";
 
 
 class BadRequestError extends AppError {
