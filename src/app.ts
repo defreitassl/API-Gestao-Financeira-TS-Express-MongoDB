@@ -2,7 +2,7 @@ import express, {Express, json} from 'express'
 import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/userRoutes'
 import categoryRoutes from './routes/categoryRoutes'
-import errorHandler from './middlewares/errorHandler'
+import errorHandler from './middlewares/errorHandlerMiddleware'
 import authRoutes from './routes/authRoutes'
 
 const createApp = (): Express => {

@@ -15,7 +15,7 @@ class AuthController {
 
     login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await AuthService.login()
+            const response = await AuthService.login(req.body)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)
@@ -33,7 +33,7 @@ class AuthController {
 
     me = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await AuthService.me()
+            const response = await AuthService.me(req.userId)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)

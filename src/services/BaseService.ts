@@ -42,7 +42,7 @@ abstract class Service<T> {
         try {
             const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id) throw new BadRequestError("Invalid id")
 
             const entity: T | null = await this.repository.getOne(id)
 
@@ -88,7 +88,7 @@ abstract class Service<T> {
         try {
             const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id) throw new BadRequestError("Invalid id")
             if (!data || Object.keys(data).length === 0) throw new BadRequestError(`Missing ${this.entityName} data`)
                 
             const updatedEntityInfo: UpdateResult = await this.repository.updateOne(id, data)
@@ -114,7 +114,7 @@ abstract class Service<T> {
         try {
             const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id) throw new BadRequestError("Invalid id")
 
             const deletedEntityInfo: DeleteResult = await this.repository.deleteOne(id)
 

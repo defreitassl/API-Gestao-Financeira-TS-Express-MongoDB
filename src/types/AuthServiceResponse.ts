@@ -2,9 +2,9 @@ import { IUser } from "../models/UserModel"
 
 interface AuthServiceResponse{
     statusCode: number,
-    content: {
-        token: string,
-        user: Partial<IUser>,
+    content?: {
+        token?: string,
+        user?: Partial<IUser>,
         error?: string | unknown,
         message?: string
     }

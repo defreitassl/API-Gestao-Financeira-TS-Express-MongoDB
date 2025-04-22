@@ -46,7 +46,7 @@ class UserService extends Service<IUser> {
             
             const id: Types.ObjectId | false = toObjectId(idParam)
 
-            if (!id || !Types.ObjectId.isValid(id)) throw new BadRequestError("Invalid id")
+            if (!id) throw new BadRequestError("Invalid id")
 
             const updatedUserInfo: UpdateResult = await UserRepository.updateOne(id, data)
             
