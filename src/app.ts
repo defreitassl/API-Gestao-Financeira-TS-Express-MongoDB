@@ -1,18 +1,15 @@
-import express, {Express, json} from 'express'
-import transactionRoutes from './routes/transactionRoutes'
-import userRoutes from './routes/userRoutes'
-import categoryRoutes from './routes/categoryRoutes'
-import errorHandler from './middlewares/errorHandlerMiddleware'
-import authRoutes from './routes/authRoutes'
+import express, { Express, json } from 'express'
+import { userRouter, transactionRouter, categoryRouter, authRouter } from './routes'
+import { errorHandler } from './middlewares'
 
 const createApp = (): Express => {
 
     const app = express()
     app.use(json())
-    app.use(transactionRoutes)
-    app.use(userRoutes)
-    app.use(categoryRoutes)
-    app.use(authRoutes)
+    app.use(userRouter)
+    app.use(transactionRouter)
+    app.use(categoryRouter)
+    app.use(authRouter)
     app.use(errorHandler)
 
 

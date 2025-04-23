@@ -1,4 +1,4 @@
-import {Express, Request, Response} from 'express'
+import { Express, Request, Response } from 'express'
 import createApp from './app'
 import connectDB from './config/mongoose'
 

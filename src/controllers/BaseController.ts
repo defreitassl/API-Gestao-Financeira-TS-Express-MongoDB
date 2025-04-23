@@ -1,6 +1,5 @@
-import { NextFunction } from "express"
-import { Request, Response } from 'express'
-import Service from "../services/BaseService"
+import { Request, Response, NextFunction } from 'express'
+import { Service } from '../services'
 
 
 abstract class Controller<T> {

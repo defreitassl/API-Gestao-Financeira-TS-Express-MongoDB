@@ -1,6 +1,6 @@
-import UserService from '../services/UserService'
-import Controller from './BaseController'
-import { IUser } from '../models/UserModel'
+import { UserService } from '../services'
+import { Controller } from './'
+import { IUser } from '../models'
 import { Request, Response,NextFunction } from 'express'
 
 

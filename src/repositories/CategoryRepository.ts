@@ -1,5 +1,5 @@
-import Category, { ICategory } from "../models/CategoryModel"
-import Repository from "./BaseRepository"
+import { Category, ICategory } from "../models"
+import { Repository } from "./"
 
 
 class CategoryRepository extends Repository<ICategory> {

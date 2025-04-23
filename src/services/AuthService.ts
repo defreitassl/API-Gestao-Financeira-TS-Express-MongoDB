@@ -1,13 +1,9 @@
 import { BadRequestError, ConflictError, NotFoundError, UnauthorizedError, UnprocessableEntityError } from "../errors"
-import { IUser } from "../models/UserModel"
-import UserRepository from "../repositories/UserRepository"
-import StatusCode from "../types/StatusCode"
-import { generateToken } from "../utils/jwt"
-import AuthServiceResponse from "../types/AuthServiceResponse"
-import { comparePassword, hashPassword } from "../utils/bcrypt"
-import isValidEmail from "../utils/validateEmail"
+import { IUser } from "../models"
+import { UserRepository } from "../repositories"
+import { AuthServiceResponse, StatusCode } from "../types"
+import { toObjectId, isValidEmail, comparePassword, hashPassword, generateToken } from "../utils"
 import { Types } from "mongoose"
-import toObjectId from "../utils/toObjectId"
 
 class AuthService {
 

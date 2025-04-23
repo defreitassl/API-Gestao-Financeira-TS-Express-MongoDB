@@ -1,12 +1,10 @@
 import { Types } from "mongoose"
-import { BadRequestError, ConflictError, NotFoundError, UnprocessableEntityError } from "../errors"
+import { BadRequestError, NotFoundError } from "../errors"
 import { IUser } from "../models/UserModel"
-import UserRepository from "../repositories/UserRepository"
-import ServiceResponse from "../types/ServiceResponse"
-import UpdateResult from "../types/UpdateRequestResult"
-import StatusCode from "../types/StatusCode"
-import Service from "./BaseService"
-import toObjectId from "../utils/toObjectId"
+import { UserRepository } from "../repositories"
+import { ServiceResponse, UpdateResult, StatusCode } from "../types"
+import { Service } from "./"
+import { toObjectId } from "../utils"
 
 
 class UserService extends Service<IUser> {

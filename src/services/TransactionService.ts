@@ -1,13 +1,8 @@
-import { ITransaction } from "../models/TransactionModel"
 import { Types } from "mongoose"
-import ServiceResponse from "../types/ServiceResponse"
-import StatusCode from "../types/StatusCode"
-import TransactionRepository from "../repositories/TransactionRepository"
-import toObjectId from "../utils/toObjectId"
-import DeleteResult from "../types/DeleteRequestResult"
-import UpdateResult from "../types/UpdateRequestResult"
-import UserRepository from "../repositories/UserRepository"
-import { IUser } from "../models/UserModel"
+import { toObjectId } from "../utils"
+import { DeleteResult, UpdateResult, StatusCode, ServiceResponse } from "../types"
+import { UserRepository, TransactionRepository } from "../repositories"
+import { IUser, ITransaction } from "../models"
 import { BadRequestError, NotFoundError, UnprocessableEntityError } from "../errors"
 
 

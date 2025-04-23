@@ -1,4 +1,4 @@
-import { IUser } from "../models/UserModel"
+import { IUser } from "../models"
 
 interface AuthServiceResponse{
     statusCode: number,

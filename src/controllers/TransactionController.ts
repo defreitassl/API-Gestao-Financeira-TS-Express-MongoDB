@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import TransactionService from '../services/TransactionService'
+import { TransactionService } from '../services'
 
 
 class TransactionController {

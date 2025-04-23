@@ -1,6 +1,6 @@
-import CategoryService from "../services/CategoryService"
-import { ICategory } from "../models/CategoryModel"
-import Controller from "./BaseController"
+import { ICategory } from "../models"
+import { CategoryService } from "../services"
+import { Controller } from "./"
 
 
 class CategoryController extends Controller<ICategory> {

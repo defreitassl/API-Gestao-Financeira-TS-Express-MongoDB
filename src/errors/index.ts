@@ -39,6 +39,7 @@ class UnprocessableEntityError extends AppError {
   }
 
 export {
+    AppError,
     BadRequestError,
     UnauthorizedError,
     ForbiddenError,

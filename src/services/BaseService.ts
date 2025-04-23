@@ -1,10 +1,7 @@
 import { Types, pluralize } from "mongoose"
-import toObjectId from "../utils/toObjectId"
-import ServiceResponse from "../types/ServiceResponse"
-import StatusCode from "../types/StatusCode"
-import Repository from "../repositories/BaseRepository"
-import UpdateResult from "../types/UpdateRequestResult"
-import DeleteResult from "../types/DeleteRequestResult"
+import { toObjectId } from "../utils"
+import { ServiceResponse, StatusCode, DeleteResult, UpdateResult } from "../types"
+import { Repository } from "../repositories"
 import { BadRequestError, NotFoundError } from "../errors"
 
 

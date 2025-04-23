@@ -1,4 +1,4 @@
-import StatusCode from "../types/StatusCode"
+import { StatusCode } from "../types"
 
 export default class AppError extends Error {
     public readonly statusCode: StatusCode

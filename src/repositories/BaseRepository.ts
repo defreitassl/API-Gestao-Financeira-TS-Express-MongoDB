@@ -1,6 +1,5 @@
 import { Model, Types } from "mongoose"
-import UpdateResult from "../types/UpdateRequestResult"
-import DeleteResult from "../types/DeleteRequestResult"
+import { UpdateResult, DeleteResult } from "../types"
 
 
 abstract class Repository<T> {

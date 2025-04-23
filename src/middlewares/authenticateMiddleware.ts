@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
-import StatusCode from "../types/StatusCode"
-import { verifyToken } from "../utils/jwt"
+import { StatusCode } from "../types"
+import { verifyToken } from "../utils"
 import { UnauthorizedError } from "../errors"
 
 
