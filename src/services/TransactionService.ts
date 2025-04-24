@@ -72,9 +72,7 @@ class TransactionService{
             ) throw new BadRequestError(`Missing User data`)
 
             if ( // Verifies if all the required user fields are present
-                !data.userId 
-                ||!data.categoryId
-                || !data.name 
+                !data.name 
                 || !data.amount 
                 || !(typeof data.inflow === 'boolean')
                 || !data.paymentMethod
@@ -82,6 +80,8 @@ class TransactionService{
 
             const user: IUser | null = await UserRepository.getOne(userId)
             if (!user) throw new NotFoundError("User Not Found | Invalid Id param")
+
+            data.userId = userId //Add the user Id gotten from the auth token on the data object
 
             const transaction: ITransaction = await TransactionRepository.createOneTransaction(data)
 

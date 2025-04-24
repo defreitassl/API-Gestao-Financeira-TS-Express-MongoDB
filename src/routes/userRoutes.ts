@@ -1,16 +1,16 @@
 import { Router } from "express"
 import { UserController } from "../controllers"
+import { authMiddleware } from "../middlewares"
 
 
 const router = Router()
 const userController = new UserController()
 
+// Rota Apenas para testes
 router.get("/users", userController.getAll)
 
-router.get("/users/:id", userController.getOne)
+router.patch("/users/update", authMiddleware, userController.updateOneUser)
 
-router.patch("/users/update/:id", userController.updateOne)
-
-router.delete("/users/delete/:id", userController.deleteOne)
+router.delete("/users/delete", authMiddleware, userController.deleteOneUser)
 
 export default router
