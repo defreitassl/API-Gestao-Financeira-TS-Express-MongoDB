@@ -115,7 +115,7 @@ abstract class Service<T> {
 
             const deletedEntityInfo: DeleteResult = await this.repository.deleteOne(id)
 
-            if (!deletedEntityInfo || deletedEntityInfo.deletedCount === 0) throw new NotFoundError(`${this.entityName} not found | Wrong id`)
+            if (!deletedEntityInfo || deletedEntityInfo.deletedCount === 0) throw new NotFoundError(`Could not found ${this.entityName}`)
 
             return {
                 statusCode: StatusCode.OK,
