@@ -10,7 +10,7 @@ export interface ITransaction extends Document {
     paymentMethod: "Pix" | "Cartão" | "Dinheiro" | "Transferência",
     description?: string,
     recipient?: string,
-    date?: Date
+    date?: string
 }
 
 const transactionSchema = new Schema<ITransaction>({
@@ -22,7 +22,7 @@ const transactionSchema = new Schema<ITransaction>({
     paymentMethod: { type: String, enum: ["Pix", "Cartão", "Dinheiro", "Transferência"], required: true },
     description: { type: String },
     recipient: { type: String },
-    date: { type: Date, default: Date.now }
+    date: { type: String, default: Date.now }
 }, {
     strict: "throw"
 })

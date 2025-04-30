@@ -9,10 +9,10 @@ const errorHandler = async (err: Error | unknown, req: Request, res: Response, n
         })
     }
 
-    // Erros não operacionais (ex: bugs)
-    console.error("Unhandled error:", err)
+    console.log("Unhandled error: "+ err)
 
     res.status(500).json({
+        error: err,
         status: "error",
         message: "Internal Server Error",
     })

@@ -2,6 +2,7 @@ import { comparePassword, hashPassword } from './bcrypt'
 import { IPayload, generateToken, verifyToken } from './jwt'
 import toObjectId from './toObjectId'
 import isValidEmail from './validateEmail'
+import formatDate from './formatDate'
 
 export {
     comparePassword, 
@@ -10,5 +11,6 @@ export {
     generateToken, 
     verifyToken, 
     toObjectId, 
-    isValidEmail
+    isValidEmail,
+    formatDate
 }

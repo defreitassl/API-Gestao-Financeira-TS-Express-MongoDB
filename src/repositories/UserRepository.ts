@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import { User, IUser } from "../models"
 import { Repository } from "./"
-import { UpdateResult } from "../types"
+import { DeleteResult, UpdateResult } from "../types"
 
 
 class UserRepository extends Repository<IUser> {

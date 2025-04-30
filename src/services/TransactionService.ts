@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import { toObjectId } from "../utils"
+import { formatDate, toObjectId } from "../utils"
 import { DeleteResult, UpdateResult, StatusCode, ServiceResponse } from "../types"
 import { UserRepository, TransactionRepository } from "../repositories"
 import { IUser, ITransaction } from "../models"
@@ -83,6 +83,11 @@ class TransactionService{
 
             data.userId = userId //Add the user Id gotten from the auth token on the data object
 
+            const formattedDate: string | BadRequestError = formatDate(data.date)
+            if (formattedDate instanceof BadRequestError) throw formattedDate
+
+            data.date = formattedDate // Format the provided date to a friendly string
+            
             const transaction: ITransaction = await TransactionRepository.createOneTransaction(data)
 
             const newBalanceAmount: number = transaction.inflow ? (user.balance + transaction.amount) : (user.balance - transaction.amount)
@@ -168,6 +173,7 @@ class TransactionService{
             if (!userId) throw new BadRequestError("Invalid user Id param")
 
             const transactionId: Types.ObjectId | false = toObjectId(transactionIdParam)
+            console.log(transactionIdParam)
             if (!transactionId) throw new BadRequestError("Invalid transaction Id param")
 
 

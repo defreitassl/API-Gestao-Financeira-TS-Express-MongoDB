@@ -20,7 +20,7 @@ class UserController extends Controller<IUser> {
 
     deleteOneUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const response = await UserService.deleteOne(req.user!.id)
+            const response = await UserService.deleteOneUser(req.user!.id)
             res.status(response.statusCode).json(response.content)
         } catch (error) {
             next(error)

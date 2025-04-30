@@ -1,4 +1,4 @@
-import { Types } from "mongoose"
+import { Types, ObjectId} from "mongoose"
 import { User, IUser, Transaction, ITransaction } from "../models"
 import { DeleteResult, UpdateResult } from "../types"
 
@@ -76,6 +76,14 @@ class TransactionRepository{
     pullTransactionFromUser = async (userId: Types.ObjectId, transactionId: Types.ObjectId): Promise<IUser | null> => {
         const requestInfo: IUser | null = await User.findByIdAndUpdate(userId, {
             $pull: { transactions: transactionId }
+        })
+
+        return requestInfo
+    }
+
+    deleteMany = async (transactionsIds: ObjectId[]) => {
+        const requestInfo: DeleteResult = await Transaction.deleteMany({
+            _id:  {$in: transactionsIds }
         })
 
         return requestInfo
