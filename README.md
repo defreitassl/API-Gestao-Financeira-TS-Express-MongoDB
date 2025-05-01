@@ -1,27 +1,13 @@
 # API de Gestão Financeira
 
-API REST desenvolvida com **Node.js**, **TypeScript**, **Express** e **MongoDB** para controle de finanças pessoais. Esta aplicação permite o registro de receitas e despesas por categoria, autenticação de usuários, e fornece base para futuras integrações com investimentos e dados externos em tempo real.
-
-## 📚 Sumário
-
-- [Funcionalidades](#funcionalidades)
-- [Arquitetura do Projeto](#arquitetura-do-projeto)
-  - [Camadas e Responsabilidades](#camadas-e-responsabilidades)
-  - [Fluxos e Operações](#fluxos-e-operações)
-  - [Banco de Dados](#banco-de-dados)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Como Executar o Projeto](#como-executar-o-projeto)
-- [Contribuições](#contribuições)
-- [Licença](#licença)
-- [Contato](#contato)
+API REST desenvolvida com **Node.js**, **TypeScript**, **Express** e **MongoDB** para controle de finanças pessoais. Esta aplicação permite o registro de receitas e despesas por categoria, autenticação de usuários, e fornece base para futuras integrações com investimentos e dados externos em tempo real. Com uma arquitetura totalmente modular e escalável, é um projeto com um grande potencial de crescimento.
 
 ## ✅ Funcionalidades
 
 - Cadastro e autenticação de usuários com JWT
 - Registro de transações financeiras (receitas e despesas)
-- Organização por categorias customizáveis
-- Suporte a diferentes formas de pagamento
-- Filtros por data, categoria e tipo (entrada/saída)
+- Organização por categorias de transações customizáveis
+- Filtros por data, categoria e tipo (entrada/saída)  *// Ainda não implementado*
 - Middleware global de tratamento de erros
 - Retornos padronizados com status HTTP, mensagens e payload
 
@@ -35,27 +21,12 @@ API REST desenvolvida com **Node.js**, **TypeScript**, **Express** e **MongoDB**
 - **Model**: define os schemas dos dados.
 - **Middleware**: trata autenticação, erros e resposta.
 
-### Fluxos e Operações
-
-- **Criação de Transação**
-  - Validação dos dados recebidos.
-  - Registro da transação e associação a usuário e categoria.
-  - Retorno com status `201 Created`.
-
-- **Autenticação**
-  - Login com validação de e-mail e senha.
-  - Geração e retorno de token JWT válido.
-
-- **Consulta de Dados**
-  - Filtros por `userId`, `data`, `categoria`, `tipo`.
-  - Paginação e ordenação por data de forma opcional.
-
 ### Banco de Dados
 
 Banco não-relacional (MongoDB). Estrutura simplificada:
 
 - `users`: dados dos usuários e autenticação
-- `transactions`: valores, data, tipo, categoria, forma de pagamento
+- `transactions`: valores, data, tipo, categoria, forma de pagamento, descrição e destinatário
 - `categories`: nome e cor de categorias criadas pelo usuário
 
 ## 🛠️ Tecnologias Utilizadas
@@ -65,8 +36,8 @@ Banco não-relacional (MongoDB). Estrutura simplificada:
 - MongoDB + Mongoose
 - JWT
 - Bcrypt
-- Dotenv
-- TS-Node + Nodemon
+- Clean Architecture: Arquitetura em Camadas (Controller, Service, Repository, Model)
+- TS-Node
 
 ## ▶️ Como Executar o Projeto
 
@@ -78,27 +49,26 @@ Banco não-relacional (MongoDB). Estrutura simplificada:
 ### Instalação
 
 ```bash
-git clone <repositório>
-cd api-gestao-financeira
+git clone 'https://github.com/defreitassl/API-Gestao-Financeira-TS-Express-MongoDB'
+cd API-Gestao-Financeira-TS-Express-MongoDB
 npm install
-cp .env.example .env
 ```
 
 Configure seu `.env` com:
 
-```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/sua-base
-JWT_SECRET=sua_chave_secreta
+```.env
+PORT=3333
+DB_URI=<sua URI do mongoDB>
+SECRET_KEY=<sua_chave_secreta>
 ```
 
 ### Execução
 
 ```bash
-npm run dev
+npm run start:watch
 ```
 
-A API será executada em `http://localhost:3000`
+A API será executada em `http://localhost:3333`
 
 ## 🤝 Contribuições
 
@@ -110,6 +80,6 @@ Distribuído sob a licença MIT.
 
 ## 📬 Contato
 
-Desenvolvido por [Seu Nome Aqui]  
-Email: [seu@email.com]  
-LinkedIn: [https://linkedin.com/in/seu-perfil](https://linkedin.com/in/seu-perfil)
+ - Desenvolvido por Douglas Freitas  
+ - Email: [douglasamf14@gmail.com](mailto:douglasamf14@gmail.com)
+ - LinkedIn: [www.linkedin.com/in/douglas-freitas-236947257](www.linkedin.com/in/douglas-freitas-236947257)
