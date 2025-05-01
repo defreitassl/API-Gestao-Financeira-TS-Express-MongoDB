@@ -82,4 +82,4 @@ Distribuído sob a licença MIT.
 
  - Desenvolvido por Douglas Freitas  
  - Email: [douglasamf14@gmail.com](mailto:douglasamf14@gmail.com)
- - LinkedIn: [www.linkedin.com/in/douglas-freitas-236947257](www.linkedin.com/in/douglas-freitas-236947257)
+ - [LinkedIn](https://www.linkedin.com/in/douglas-freitas-236947257)
