@@ -2,6 +2,8 @@
 
 API REST desenvolvida com **Node.js**, **TypeScript**, **Express** e **MongoDB** para controle de finanças pessoais. Esta aplicação permite o registro de receitas e despesas por categoria, autenticação de usuários, e fornece base para futuras integrações com investimentos e dados externos em tempo real. Com uma arquitetura totalmente modular e escalável, é um projeto com um grande potencial de crescimento.
 
+### **Documentação Interativa do Postman:** [Aqui](https://documenter.getpostman.com/view/37882674/2sB2j4eAZu)
+
 ## ✅ Funcionalidades
 
 - Cadastro e autenticação de usuários com JWT
