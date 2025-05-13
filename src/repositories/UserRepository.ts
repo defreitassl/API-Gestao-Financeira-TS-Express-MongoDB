@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import { User, IUser } from "../models"
+import { User, IUser, ITransaction } from "../models"
 import { Repository } from "./"
 import { DeleteResult, UpdateResult } from "../types"
 

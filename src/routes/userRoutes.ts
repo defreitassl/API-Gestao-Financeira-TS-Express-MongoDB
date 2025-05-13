@@ -13,4 +13,6 @@ router.patch("/users/update", authMiddleware, userController.updateOneUser)
 
 router.delete("/users/delete", authMiddleware, userController.deleteOneUser)
 
+router.get("/users/summary", authMiddleware, userController.getUserSummary)
+
 export default router

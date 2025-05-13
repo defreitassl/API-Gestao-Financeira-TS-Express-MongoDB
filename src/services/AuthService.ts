@@ -27,7 +27,7 @@ class AuthService {
             data.password = hashedPassword
 
             const user: IUser = await UserRepository.createOne(data)
-            const { password, transactions, ...userWithoutPassword } = user.toObject()
+            const { password, transactions, _id, ...userWithoutPassword } = user.toObject()
 
             const token: string = generateToken({ id: user.id, email: user.email })
 
@@ -65,7 +65,7 @@ class AuthService {
             const isCorrectPassword: boolean = await comparePassword(data.password, user.password)
             if (!isCorrectPassword) throw new UnauthorizedError("Invalid user credentials")
 
-            const { password, transactions, ...userWithoutPassword } = user.toObject()
+            const { password, transactions, _id, ...userWithoutPassword } = user.toObject()
 
             const token: string = generateToken({ id: user.id, email: user.email })
 

@@ -26,6 +26,15 @@ class UserController extends Controller<IUser> {
             next(error)
         }
     }
+
+    getUserSummary = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const response = await UserService.getUserSummary(req.user!.id)
+            res.status(response.statusCode).json(response.content)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default UserController

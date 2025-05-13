@@ -2,9 +2,10 @@ import { Types } from "mongoose"
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors"
 import { IUser } from "../models/UserModel"
 import { TransactionRepository, UserRepository } from "../repositories"
-import { ServiceResponse, UpdateResult, StatusCode, DeleteResult } from "../types"
+import { ServiceResponse, UpdateResult, StatusCode, DeleteResult, UserSummary } from "../types"
 import { Service } from "./"
 import { toObjectId } from "../utils"
+import { ITransaction } from "../models"
 
 
 class UserService extends Service<IUser> {
@@ -62,6 +63,49 @@ class UserService extends Service<IUser> {
                 content: {
                     data: deletedUserInfo,
                     message: "User deleted sucessfully"
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error()
+        }
+    }
+
+    getUserSummary = async (idParam: string): Promise<ServiceResponse<UserSummary>> => {
+        try {
+            const id: Types.ObjectId | false = toObjectId(idParam)
+            if (!id) throw new BadRequestError("Invalid id provided")
+
+            const user: IUser | null = await UserRepository.getOne(id)
+            if (!user) throw new NotFoundError("User not found | Wrong id")
+
+            const userTransactions: ITransaction[] = await TransactionRepository.getAllTransactions(id)
+            const message = userTransactions.length > 0 ?
+            "User summary retrieved successfully" : "No transactions registered yet"
+
+            const expenses = userTransactions.reduce((accum, transaction) => {
+                return transaction.inflow ? accum : accum + transaction.amount;
+            }, 0)
+            
+            const income = userTransactions.reduce((accum, transaction) => {
+                return transaction.inflow ? accum + transaction.amount : accum;
+            }, 0)
+              
+
+            const userSummary: UserSummary = {
+                transactions: userTransactions ? userTransactions : null,
+                balance: user.balance,
+                expenses: expenses,
+                income: income
+            }
+
+            return {
+                statusCode: StatusCode.OK,
+                content: {
+                    data: userSummary,
+                    message: message
                 }
             }
         } catch (error) {
